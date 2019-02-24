@@ -1,0 +1,8 @@
+web:
+    image: myneo4j:latest
+    container_name: myneo4jc
+    ports:
+      - 7474:7474
+    expose:
+      - "7474"
+      - "7567"
