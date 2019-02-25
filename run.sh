@@ -9,11 +9,11 @@ source ./_vars.sh
 echo =============================================================
 echo run.sh -a [action] -b [label] -c [container]
 echo -------------------------------------------------------------
-echo -a 01 : Docker: Build
-echo -a 02 : Docker: Run Container
-echo -a 03 : Docker: Stop Container
-echo -a 04 : Docker: Remove all Containers
-echo -a 05 : Docker: View Logs 
+echo -a build : Docker: Build
+echo -a run : Docker: Run Container
+echo -a stop : Docker: Stop Container
+echo -a kill : Docker: Remove all Containers
+echo -a logs : Docker: View Logs 
 echo =============================================================
 
 #Defaults
@@ -22,8 +22,9 @@ LABEL="latest"
 CONTAINER=myneo4jc
 IMAGE=myneo4j
 TARGET=prod
+SCRIPT=dev.yml
 
-while getopts "a:b:c:t:" opt; do
+while getopts "a:b:c:t:s:" opt; do
   case "${opt}" in 
     "a" )
       ACTION="${OPTARG}"
@@ -43,19 +44,23 @@ while getopts "a:b:c:t:" opt; do
       TARGET="${OPTARG}"
       echo "Target:" $TARGET
       ;;
+    "s" )
+      SCRIPT="${OPTARG}"
+      echo "Script:" $SCRIPT
+      ;;
   esac
 done
 
 
 case "$ACTION" in
-  "01" )
+  "build" )
     echo ===========================================================
     echo Docker Build
     echo ===========================================================
     docker build -t $IMAGE .
     ;;
 
-  "02" )
+  "run" )
     echo ===========================================================
     echo Docker Run
     echo ===========================================================
@@ -67,26 +72,38 @@ case "$ACTION" in
 #    --name $CONTAINER \
     ;;
 
-  "03" )
+  "stop" )
     echo ===========================================================
     echo Docker Stop
     echo ===========================================================
     docker container stop $CONTAINER
     ;;
 
-  "04" )
+  "remove" )
     echo ===========================================================
-    echo Docker Remove Containers
+    echo Docker Remove All Containers
     echo ===========================================================
-    docker stop $(docker ps -aq)
+    docker kill $CONTAINER
+    docker rm -f $CONTAINER
+#    docker stop $(docker ps -aq)
     ;;
 
-  "05" )
+  "logs" )
     echo ===========================================================
     echo Docker Logs
     echo ===========================================================
     docker logs -f $CONTAINER
     ;;
+
+
+  "compose" )
+    echo ===========================================================
+    echo Docker Compose
+    echo ===========================================================
+    docker-compose -f $SCRIPT
+    ;;
+
+
 
   * )
     # Default option.
