@@ -2,7 +2,6 @@
 source ./_vars.sh
 # ================================================================
 # Command-line Assistant - run.sh
-# - Neo4j
 # ================================================================
 
 
@@ -10,9 +9,10 @@ echo =============================================================
 echo run.sh -a [action] -b [label] -c [container]
 echo -------------------------------------------------------------
 echo -a build : Docker: Build
-echo -a run : Docker: Run Container
+echo -a start : Docker: Run Container
 echo -a stop : Docker: Stop Container
-echo -a kill : Docker: Remove all Containers
+echo -a remove : Docker: Kill & Remove a Containers
+echo -a killall : Docker: Kill all Containers
 echo -a logs : Docker: View Logs 
 echo =============================================================
 
@@ -51,6 +51,9 @@ while getopts "a:b:c:t:s:" opt; do
   esac
 done
 
+export LABEL="{$LABEL}"
+# export DATA_DIR="${HOME}/ga/${LABEL}
+
 
 case "$ACTION" in
   "build" )
@@ -60,16 +63,17 @@ case "$ACTION" in
     docker build -t $IMAGE .
     ;;
 
-  "run" )
+  "start" )
     echo ===========================================================
     echo Docker Run
     echo ===========================================================
-    docker run -d \
+    docker run \
+    --name $CONTAINER \
     --publish=7474:7474 --publish=7687:7687 \
     --volume=$HOME/neo4j/data:/data \
     --volume=$HOME/neo4j/logs:/logs \
+    -d \
     $IMAGE \
-#    --name $CONTAINER \
     ;;
 
   "stop" )
@@ -81,12 +85,23 @@ case "$ACTION" in
 
   "remove" )
     echo ===========================================================
-    echo Docker Remove All Containers
+    echo Docker Remove Containers
     echo ===========================================================
     docker kill $CONTAINER
     docker rm -f $CONTAINER
 #    docker stop $(docker ps -aq)
     ;;
+
+
+  "killall" )
+    echo ===========================================================
+    echo Docker Remove All Containers
+    echo ===========================================================
+    docker stop $(docker ps -aq)
+    ;;
+
+
+
 
   "logs" )
     echo ===========================================================
@@ -102,7 +117,6 @@ case "$ACTION" in
     echo ===========================================================
     docker-compose -f $SCRIPT
     ;;
-
 
 
   * )
