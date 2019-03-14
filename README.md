@@ -3,23 +3,23 @@
 
 
 ## Table of Contents
-- [Docker Neo4j](#dockerneo4j-history) 
-  - Dockerneo4j Features
-  - [Dockerneo4j Usage](#dockerneo4j-usage)
+- [DC Neo4j](#docker-neo4j-history) 
+  - DC-neo4j Features
+  - [DC-neo4j Usage](#docker-neo4j-usage)
   - [External References](#external-references)
 
 
-## Dockerneo4j Features
+## Docker neo4j Features
 - Add plugins like apoc, stanford NLP
 
-## Dockerneo4j Usage
+## Docker neo4j Usage
 - Use run.sh for tasks
 - Build Dockerfile
 - Run image
 - Kill container
 
 
-## Dockereo4j History
+## Docker-neo4j History
 - Starting from node image
 - Add content files
 
